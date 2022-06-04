@@ -7,13 +7,13 @@ import java.util.Map;
 import java.util.Optional;
 
 @Repository
-public class MemoryItemRepository implements ItemRepository{
+public class MemoryItemRepository implements ItemRepository {
 
     private final Map<Long, Item> store = new HashMap<>();
     private long sequence = 0L;
 
     @Override
-    public Item Save(Item item) {
+    public Item save(Item item) {
         item.setId(++sequence);
         store.put(item.getId(), item);
         return item;
