@@ -7,15 +7,18 @@ import hello.upload.file.FileStore;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Controller
@@ -47,4 +50,18 @@ public class ItemController {
         return "redirect:/items/{itemId}";
     }
 
+    @GetMapping("/items/{id}")
+    public String items(@PathVariable Long id, Model model) {
+        Item item = itemRepository.findById(id).orElse(null);
+        model.addAttribute("item", item);
+
+        return "item-view";
+    }
+
+    @ResponseBody
+    @GetMapping("/images/{filename}")
+    public Resource downloadImage(@PathVariable String filename) throws MalformedURLException {
+//        "file:/Users/../~~~.png"
+        return new UrlResource("file:" + fileStore.getFullPath(filename));
+    }
 }
